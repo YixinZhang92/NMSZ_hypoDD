@@ -7,7 +7,7 @@
 % cluster 5: 35.5N ~36.25N; 90.5W~89.55W
 
 %% Define map margin and file terms
-file_reloc='hypoDD.reloc'; file_loc='hypoDD.loc'; file_sta='hypoDD.sta'; 
+file_reloc='hypoDD.reloc'; file_loc='hypoDD.loc'; file_sta='hypoDD.sta';
 file_line=''; 
 axis_latmin = 35.5;
 axis_latmax = 37.5;
@@ -19,8 +19,25 @@ axis_lonmax = -88.5;
 mdat1=load(file_reloc); 
 mdat2=load(file_loc); 
 
-cusp1 = mdat1(:,1);lon1=mdat1(:,3); lat1=mdat1(:,2); depth1 = mdat1(:,4); rms = mdat1(:,23);
-cusp2 = mdat2(:,1);lon2=mdat2(:,3); lat2=mdat2(:,2); depth2 = mdat2(:,4); 
+cusp1 = mdat1(:,1);lon1=mdat1(:,3); lat1=mdat1(:,2); depth1 = mdat1(:,4); 
+rms = mdat1(:,23);
+cusp2 = mdat2(:,1);lon2=mdat2(:,3); lat2=mdat2(:,2); depth2 = mdat2(:,4);
+
+% --- read stations:
+fid1=fopen(file_sta,'r');
+for i=1:1000000
+        [dum,count]= fscanf(fid1,'%s1/');
+        if count == 0 break; end
+        sta(i,1:length(dum))= dum;
+        slat(i)=fscanf(fid1,'%f1') ; slon(i)=fscanf(fid1,'%f1') ;
+        dum=fscanf(fid1,'%s1') ; dum=fscanf(fid1,'%s1') ;
+        np(i)=fscanf(fid1,'%d1') ; ns(i)=fscanf(fid1,'%d1') ;
+        nnp(i)=fscanf(fid1,'%d1') ; nns(i)=fscanf(fid1,'%d1') ;
+        dum=fscanf(fid1,'%f1'); dum=fscanf(fid1,'%f1'); 
+        dum=fscanf(fid1,'%d1/');
+end
+ind= find(np+ns+nnp+nns > 0); slon= slon(ind); slat= slat(ind); 
+sta= sta(ind,:); disp(['# of stations = ' num2str(length(sta))]);
 
 %% put events into clusters
 
@@ -63,6 +80,9 @@ plot(lon1(ind2),lat1(ind2),'o','markersize',0.5,'color','g');
 plot(lon1(ind3),lat1(ind3),'o','markersize',0.5,'color','c');
 plot(lon1(ind4),lat1(ind4),'o','markersize',0.5,'color','m');
 plot(lon1(ind5),lat1(ind5),'o','markersize',0.5,'color','g');
+
+plot(slon,slat,'v','markersize',2.5,'color','k'); 
+
 
 
 
