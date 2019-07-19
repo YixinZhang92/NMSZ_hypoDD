@@ -1,5 +1,9 @@
 reloc = load('hypoDD.reloc');
 loc = load('hypoDD.loc');
+% set origin
+x0 = -90;
+y0 = 36.35;
+d2l = cos(y0/180)*111.699; % degree to km
 
 reloc_lat = reloc(:,2);
 reloc_lon = reloc(:,3);
@@ -13,8 +17,10 @@ fid = fopen('xyz.reloc','w');
 
 for i = 1:length(reloc_lat)
     
-    fprintf(fid,'%6.3f %6.3f %5.2f\n',...
-        reloc_lat(i),reloc_lon(i),reloc_depth(i));
+    x = d2l*(reloc_lon(i) - x0);
+    y = d2l*(reloc_lat(i) - y0);
+    z = reloc_depth(i);
+    fprintf(fid,'%6.3f %6.3f %5.2f\n', x, y, z);
     
 end
 
@@ -22,7 +28,9 @@ fid = fopen('xyz.loc','w');
 
 for i = 1:length(loc_lat)
     
-    fprintf(fid,'%6.3f %6.3f %5.2f\n',...
-        loc_lat(i),loc_lon(i),loc_depth(i));
+    xo = d2l*(loc_lon(i) - x0);
+    yo = d2l*(loc_lat(i) - y0);
+    zo = loc_depth(i);
+    fprintf(fid,'%6.3f %6.3f %5.2f\n', xo, yo, zo);
     
 end
