@@ -2,15 +2,25 @@
 
 dt=100.0; delta=0.01; % sample rate 
 
+year = 2016;
+% Data before 2009 (2000~2008) can has a file name ending with "*HZ.NM" 
+% After that, [2009~] files has a name ending with "*HZ.NM.00"   
+if year > 2008 
+    P_file_end = '*HZ.*';
+    S_file_end = '*HE.*';
+else
+    P_file_end = '*HZ.NM';
+    S_file_end = '*HE.NM';
+end
+
 %%%%%%%%%%%%%%%% Input files
-% data.phase
-% dt.ct
-% all_event.list 
+phase_file = 'data.phase';
+time_file = 'dt.ct';
+event_file = [ num2str(year) '.txt'];
 %%%%%%%%%%%%%%%% Output files
-% dt.cc
+cctime_file = ['dt_' num2str(year) '.cc'];
 % dt_out.cc
-
-
+%%%%%%%%%%%%%%%% 
 
 
 %npts=128;n2=npts/2; nfft=n2+1; df=1.0/(delta*npts);
@@ -27,7 +37,7 @@ lp = 2.0*30.0/dt; hp = 2.0*0.6/dt; % low pass; high pass
 [b_lw,a_lw] = butter (4,lp);
 [b_hp,a_hp] = butter (4,hp,'high');
 
-fid=fopen('data.phase');
+fid=fopen(phase_file);
 p=0;
 while 1
     tline = fgetl(fid);
@@ -49,7 +59,7 @@ end
 fclose(fid);
 
 %read event directories
-fid=fopen('2000.txt');
+fid=fopen(event_file);
 p=1;
 while 1
     tline = fgetl(fid);
@@ -59,14 +69,14 @@ while 1
 end
 fclose(fid);
 
-fd=fopen('dt.cc','w');
+fd=fopen(cctime_file,'w');
 fcd=fopen('dt_out.cc','w');
 origin=0.0;
 
 %d_dir='/gaia/data/seisnet/NM/';
 d_dir='/Volumes/Untitled/Data/';
 %read file containg event associations
-fid=fopen('dt.ct');
+fid=fopen(time_file);
 p=0;
 while 1
     tline = fgetl(fid);
@@ -103,9 +113,9 @@ while 1
         %open file for e_1
         otime=(ev(e_1).ohr*60*60)+(ev(e_1).omin*60)+ev(e_1).osec;
         if type == 'P'
-            fname = dir([d_dir ev(e_1).dir(1:4) '/Loc/' ev(e_1).dir sta '*HZ.NM']);
+            fname = dir([d_dir ev(e_1).dir(1:4) '/Loc/' ev(e_1).dir sta P_file_end]);
         else
-            fname = dir([d_dir ev(e_1).dir(1:4) '/Loc/' ev(e_1).dir sta '*HE.NM']);
+            fname = dir([d_dir ev(e_1).dir(1:4) '/Loc/' ev(e_1).dir sta S_file_end]);
         end
         if length(fname)== 0,continue,end
         name=[d_dir ev(e_1).dir(1:4) '/Loc/' ev(e_1).dir fname.name];
@@ -130,9 +140,9 @@ while 1
         %open file for e_2
         otime=(ev(e_2).ohr*60*60)+(ev(e_2).omin*60)+ev(e_2).osec;
         if type == 'P'
-            fname = dir([d_dir ev(e_2).dir(1:4) '/Loc/' ev(e_2).dir sta '*HZ.NM']);
+            fname = dir([d_dir ev(e_2).dir(1:4) '/Loc/' ev(e_2).dir sta P_file_end]);
         else
-            fname = dir([d_dir ev(e_2).dir(1:4) '/Loc/' ev(e_2).dir sta '*HE.NM']);
+            fname = dir([d_dir ev(e_2).dir(1:4) '/Loc/' ev(e_2).dir sta S_file_end]);
         end
         if length(fname)== 0,continue,end
         name=[d_dir ev(e_2).dir(1:4) '/Loc/' ev(e_2).dir fname.name];
@@ -182,3 +192,5 @@ while 1
 end
 fclose(fd);
 fclose(fid);
+load handel
+sound(y,Fs)
