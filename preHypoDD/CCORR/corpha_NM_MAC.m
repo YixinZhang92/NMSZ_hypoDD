@@ -4,7 +4,8 @@ dt=100.0; delta=0.01; % sample rate
 
 year = 2016;
 % Data before 2009 (2000~2008) can has a file name ending with "*HZ.NM" 
-% After that, [2009~] files has a name ending with "*HZ.NM.00"   
+% After that, [2009~] files has a name ending with "*HZ.NM.00" or "TA.--" 
+% year 2018, 2019 has no crosscorrelation data
 if year > 2008 
     P_file_end = '*HZ.*';
     S_file_end = '*HE.*';
@@ -12,6 +13,7 @@ else
     P_file_end = '*HZ.NM';
     S_file_end = '*HE.NM';
 end
+
 
 %%%%%%%%%%%%%%%% Input files
 phase_file = 'data.phase';
