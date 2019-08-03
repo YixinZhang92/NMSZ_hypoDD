@@ -1,9 +1,9 @@
-function [data,delta,nheader,fid] = g_sac(name)
+function [data,delta,nheader,fid] = g_sac_l(name)
 filename = name;
 %[fid,message] = fopen(filename);
-% [fid,message] = fopen(filename,'r','l');
+[fid,message] = fopen(filename,'r','l');
 
-[fid,message] = fopen(filename,'r','b');%bite order l
+% [fid,message] = fopen(filename,'r','b');%bite order l
 if fid ~= -1
     
     [fheader,count] = fread(fid,70,'float');
