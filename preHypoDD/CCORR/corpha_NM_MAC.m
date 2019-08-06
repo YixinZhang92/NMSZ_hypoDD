@@ -1,26 +1,21 @@
 % Code to do Wave cross-correlation
 
-dt=100.0; delta=0.01; % sample rate 
-
-year = 2017;
-% Data before 2009 (2000~2008) can has a file name ending with "*HZ.NM" 
-% After that, [2009~] files has a name ending with "*HZ.NM.00"   
-if year > 2008 
-    P_file_end = '*HZ.*';
-    S_file_end = '*HE.*';
-else
-    P_file_end = '*HZ.NM';
-    S_file_end = '*HE.NM';
-end
+dt=100.0; delta=0.01; % sample rate
 
 %%%%%%%%%%%%%%%% Input files
-phase_file = 'data.phase';
+phase_file = 'data_all.phase';
 time_file = 'dt.ct';
-event_file = [ num2str(year) '.txt'];
+event_file = 'all_event.list'; %[ num2str(year) '.txt']
 %%%%%%%%%%%%%%%% Output files
-cctime_file = ['dt_' num2str(year) '.cc'];
-% dt_out.cc
-%%%%%%%%%%%%%%%% 
+cctime_file = 'dt_all.cc';
+cctime_datafile = 'dt_out_all.cc'; % dt_out.cc
+
+% Data before 2009 (2000~2008) can has a file name ending with "*HZ.NM"
+% After that, [2009~] files has a name ending with "*HZ.NM.00"
+P_file_end = '*HZ.*';
+S_file_end = '*HE.*';
+
+
 
 
 %npts=128;n2=npts/2; nfft=n2+1; df=1.0/(delta*npts);
@@ -70,7 +65,7 @@ end
 fclose(fid);
 
 fd=fopen(cctime_file,'w');
-fcd=fopen('dt_out.cc','w');
+fcd=fopen(cctime_datafile,'w');
 origin=0.0;
 
 %d_dir='/gaia/data/seisnet/NM/';
@@ -83,7 +78,7 @@ while 1
     if ~ischar(tline), break, end
     if tline(1) == '#'
         p=p+1;
-        fprintf('%i \n',p);
+        %         fprintf('%i \n',p);
         tl_let=find(tline ~= ' ');
         num_end=find(diff(tl_let) > 1);
         e_1=str2num(tline(tl_let(2):tl_let(num_end(2))));      % event1
@@ -111,7 +106,12 @@ while 1
         
         type=tline(32);
         
-        %%%%%%%%%%%% deternmine to use g_sac or g_sac_l 
+        
+        
+        
+        
+        
+        %%%%%%%%%%%% deternmine to use g_sac or g_sac_l
         date_time1 = str2num(ev(e_1).dir(1:8));
         date_time2 = str2num(ev(e_2).dir(1:8));
         thrshld = 20170522.5;
@@ -129,7 +129,7 @@ while 1
         gname=name;gname(length(gname)-3)='G';
         if exist(gname) == 1
             [data,delta,nheader,dum] = g_sac_dg(name,gname);
-        elseif date_time1 > thrshld         
+        elseif date_time1 > thrshld
             [data,dum,nheader,fip] = g_sac_l(name);
         elseif date_time1 < thrshld
             [data,dum,nheader,fip] = g_sac(name);
@@ -158,7 +158,7 @@ while 1
         gname=name;gname(length(gname)-3)='G';
         if exist(gname) == 1
             [data,delta,nheader,dum] = g_sac_dg(name,gname);
-        elseif date_time2 > thrshld         
+        elseif date_time2 > thrshld
             [data,dum,nheader,fip] = g_sac_l(name);
         elseif date_time2 < thrshld
             [data,dum,nheader,fip] = g_sac(name);
@@ -173,26 +173,26 @@ while 1
         np=round((off_time)*dt);
         if np-n2 < 1 | np-n2 > length(data) | np+n2-1 > length(data), continue, end
         a2=data(np-n2:np+n2-1).*h;
-        %do corelation
+        %do correlation
         [acor,lag]=xcorr(a1,a2,n2,'coeff');
         [amax,imax]=max(acor);
         wdel=lag(imax)*delta;
         wt=amax;
         
         if wt >= 0.7   %wt=amax correlation coef. has to be greater than 0.7 to keep.
-            figure(1)
-            a1_max=max(a1);a2_max=max(a2);
-            scale=a1_max/a2_max;
-            subplot(2,1,1);plot(t,a1,'b',t,a2*scale,'r')
-            title(name)
-            np=round((off_time-wdel)*dt);
-            a2=data(np-n2:np+n2-1).*h;
-            a1_max=max(a1);a2_max=max(a2);
-            scale=a1_max/a2_max;
-            subplot(2,1,2);plot(t,a1,'b',t,a2*scale,'r')
-            figure(2)
-            plot(lag*delta,acor,'b',lag(imax)*delta,amax,'ro')
-            pause(0.1)
+            %             figure(1)
+            %             a1_max=max(a1);a2_max=max(a2);
+            %             scale=a1_max/a2_max;
+            %             subplot(2,1,1);plot(t,a1,'b',t,a2*scale,'r')
+            %             title(name)
+            %             np=round((off_time-wdel)*dt);
+            %             a2=data(np-n2:np+n2-1).*h;
+            %             a1_max=max(a1);a2_max=max(a2);
+            %             scale=a1_max/a2_max;
+            %             subplot(2,1,2);plot(t,a1,'b',t,a2*scale,'r')
+            %             figure(2)
+            %             plot(lag*delta,acor,'b',lag(imax)*delta,amax,'ro')
+            %             pause(0.1)
             %              pause
             %if wt >= 0.7   %wt=amax correlation coef. has to be greater than 0.7 to keep.
             fprintf(fcd,'%s %s %f %f %f \n',sta,type,abs_time,wdel,wt);
@@ -201,5 +201,6 @@ while 1
         end
     end
 end
+
 fclose(fd);
 fclose(fid);
