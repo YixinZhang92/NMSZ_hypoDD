@@ -22,7 +22,7 @@ clear all;
 % err=1         display errors [0,1]
 
 % PARAMETER SETTING:
-file_reloc='hypoDD.reloc'; file_loc='hypoDD.loc'; file_sta='hypoDD.sta'; 
+file_reloc='../hypoDD.reloc'; file_loc='../hypoDD.loc'; file_sta='../hypoDD.sta'; 
 file_line=''; phiA=150; xshift=0; yshift=0.1; box_l=1.5; box_w=0.2;
 axlim=1; minmag=1; id=[]; itake=[]; err=1;
 axis_latmin = 35.5;
@@ -39,7 +39,19 @@ mdat1=load(file_reloc);
 mdat2=load(file_loc); 
 
 cusp = mdat1(:,1); mag= mdat1(:,17); lon1=mdat1(:,3); lat1=mdat1(:,2);
-depth1 = mdat1(:,4); rms = mdat1(:,23);
+depth1 = mdat1(:,4); 
+
+for i = 1:length(mdat1(:,22))
+    if mdat1(i,22) == -9 & mdat1(i,23) ~= -9 
+        rms(i) = mdat1(i,23);
+    elseif mdat1(i,22) == -9 & mdat1(i,23) ~= -9
+        rms(i) = mdat1(i,22);
+    elseif mdat1(i,22) ~= -9 & mdat1(i,23) ~= -9
+        rms(i) = mean(mdat1(i,23)+mdat1(i,22));
+    end
+end
+
+
 % x1 = mdat1(:,5)/1000; y1 = mdat1(:,6)/1000; z1 = -mdat1(:,4);
 % ex1 = mdat1(:,8)/1000; ey1 = mdat1(:,9)/1000; ez1 = mdat1(:,10)/1000;
 
@@ -63,5 +75,5 @@ mag(find(mag==0))= 0.2; % Need explaination
 % end;
 
 disp(['# of events = ' num2str(length(cusp))]);
-disp(['mean ex = ' num2str(mean(rms))]);
+disp(['mean rms = ' num2str(mean(rms))]);
 

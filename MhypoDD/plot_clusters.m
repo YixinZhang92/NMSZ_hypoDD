@@ -7,7 +7,7 @@
 % cluster 5: 35.5N ~36.25N; 90.5W~89.55W
 
 %% Define map margin and file terms
-file_reloc='hypoDD.reloc'; file_loc='hypoDD.loc'; file_sta='hypoDD.sta';
+file_reloc='../hypoDD.reloc'; file_loc='../hypoDD.loc'; file_sta='../hypoDD.sta';
 file_line=''; 
 axis_latmin = 35.5;
 axis_latmax = 37.5;
@@ -88,10 +88,10 @@ plot(slon,slat,'v','markersize',2.5,'color','k');
 
 
 legend({'origin location','relocation c1','relocation c2',...
-    'relocation c3','relocation c4','relocation c5'},'FontSize',14)
+    'relocation c3','relocation c4','relocation c5','stations'},'FontSize',14)
 
 for i = length(ind1)
-    temp_shft_lat_c1(i) = lat1(ind1(i))-lat2(find(cusp2 == cusp1(ind1(i))));
+    temp_shft_lat_c1(i) = mean(lat1(ind1(i))-lat2(find(cusp2 == cusp1(ind1(i)))));
     temp_shft_lon_c1(i) = mean(lon1(ind1(i))-lon2(find(cusp2 == cusp1(ind1(i)))));
     temp_shft_depth_c1(i) = mean(depth1(ind1(i))-depth2(find(cusp2 == cusp1(ind1(i)))));
 end
