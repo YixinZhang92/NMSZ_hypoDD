@@ -42,85 +42,68 @@ end
 
 fid = fopen(ori_phase_file);
 fd = fopen(phase_file,'w');
-q = 0;
 
 tline = fgetl(fid);
 while ischar(tline)
-    q = q+1
-    while tline(1) == '#'
-        n = length(tline)
-        temp_ind = find(tline == ' ', 2, 'last')
-%         p=p+1;
-        id = str2num(tline(temp_ind(1) + 1 : temp_ind(2) - 1))
-%         clear temp_ind
+    
+    if tline(1) == '#'
+        n = length(tline);
+        temp_ind = find(tline == ' ', 2, 'last');
+        id = str2num(tline(temp_ind(1) + 1 : temp_ind(2) - 1));
+        
         if ismember(id, ind) == 1
-            fprintf(fd, [tline '\n'])
-            tline = fgetl(fid)
+            fprintf(fd, [tline '\n']);
+            tline = fgetl(fid);
+            
             while tline(1) ~= '#'
-                fprintf(fd, [tline '\n'])
-                tline = fgetl(fid)
-%                 if tline(1)=='#'
-%                     break
-%                 end
+                fprintf(fd, [tline '\n']);
+                tline = fgetl(fid);
             end
+            
         else
-            break
+            tline = fgetl(fid);
         end
+        
+    else
+        tline = fgetl(fid);
     end
-%     tline = fgetl(fid);
 end
 
+fclose(fid);
+fclose(fd);
 
-%     fprintf(fid,'%6.3f %6.3f %5.2f %d \n ', ind_event(ind(i),1), ...
-%         ind_event(ind(i),2), ind_event(ind(i),3), ind_event(ind(i),4));
-% end
+fid = fopen(ori_cc_file);
+fd = fopen(cc_file,'w');
 
-% fclose(fid);
-% fclose(fd);
-% 
-% 
-% fid = fopen(ori_cc_file);
-% fd = fopen(cc_file,'w');
-% p = 0;
-% 
-% tline = fgetl(fid);
-% while ischar(tline)
-%     p = p+1;
-%     while tline(1) == '#'
-%         n = length(tline);
-%         temp_ind = find(tline == ' ', 2);
-%         id = str2num(tline(temp_ind(1) + 1 : temp_ind(2) - 1));
-%         clear temp_ind;
-%         if ismember(id, ind) == 1
-%             fprintf(fd, [tline '\n']);
-%             tline = fgetl(fid);
-%             if tline(1) ~= '#'
-%                 fprintf(fd, [tline '\n']);
-%             elseif tline(1)=='#'
-%                 break
-%             end
-%         else
-%             break
-%         end
-%     end
-%     tline = fgetl(fid);
-% end
-%         
-%                 
-% 
-%             
-%             %             while tline(1) ~= '#'
-% %                 fprintf(fd, [tline '\n']);
-% %                 tline = fgetl(fid);
-% %             end
-% %         end
-% %     end
-% %     tline = fgetl(fid);
-% % end
-% 
-% fclose(fid);
-% fclose(fd);
-%     
-% 
+tline = fgetl(fid);
+while ischar(tline)
+    
+    if tline(1) == '#'
+        n = length(tline);
+        temp_ind = find(tline == ' ', 2);
+        id = str2num(tline(temp_ind(1) + 1 : temp_ind(2) - 1));
+        
+        if ismember(id, ind) == 1
+            fprintf(fd, [tline '\n']);
+            tline = fgetl(fid);
+            
+            while tline(1) ~= '#'
+                fprintf(fd, [tline '\n']);
+                tline = fgetl(fid);
+            end
+            
+        else
+            tline = fgetl(fid);
+        end
+        
+    else
+        tline = fgetl(fid);
+    end
+end
+
+fclose(fid);
+fclose(fd);
+    
+
 
 
