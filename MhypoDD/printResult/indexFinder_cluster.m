@@ -59,9 +59,9 @@ while ischar(tline)
         if ismember(id, ind) == 1
             fprintf(fd, [tline '\n']);
             temp_loc_ind = find(tline == ' ', 10);
-            temp_lat = str2num(tline(lat_ind(7)+1 : lat_ind(8)-1));
-            temp_lon = str2num(tline(lat_ind(8)+1 : lat_ind(9)-1));
-            temp_depth = str2num(tline(lat_ind(9)+1 : lat_ind(9)+5));
+            temp_lat = str2num(tline(temp_loc_ind(7)+1 : temp_loc_ind(8)-1));
+            temp_lon = str2num(tline(temp_loc_ind(8)+1 : temp_loc_ind(9)-1));
+            temp_depth = str2num(tline(temp_loc_ind(9)+1 : temp_loc_ind(9)+5));
             fprintf(fd1, '%d %f %f %f \n', id, temp_lat, temp_lon, temp_depth);
             tline = fgetl(fid);
             
@@ -81,39 +81,39 @@ end
 
 fclose(fid);
 fclose(fd);
-% 
-% fid = fopen(ori_cc_file);
-% fd = fopen(cc_file,'w');
-% 
-% tline = fgetl(fid);
-% while ischar(tline)
-%     
-%     if tline(1) == '#'
-%         n = length(tline);
-%         temp_ind = find(tline == ' ', 2);
-%         id = str2num(tline(temp_ind(1) + 1 : temp_ind(2) - 1));
-%         
-%         if ismember(id, ind) == 1
-%             fprintf(fd, [tline '\n']);
-%             tline = fgetl(fid);
-%             
-%             while tline(1) ~= '#'
-%                 fprintf(fd, [tline '\n']);
-%                 tline = fgetl(fid);
-%             end
-%             
-%         else
-%             tline = fgetl(fid);
-%         end
-%         
-%     else
-%         tline = fgetl(fid);
-%     end
-% end
-% 
-% fclose(fid);
-% fclose(fd);
-%     
+fclose(fd1);
+
+fid = fopen(ori_cc_file);
+fd = fopen(cc_file,'w');
+
+tline = fgetl(fid);
+while ischar(tline)
+    
+    if tline(1) == '#'
+        n = length(tline);
+        temp_ind = find(tline == ' ', 2);
+        id = str2num(tline(temp_ind(1) + 1 : temp_ind(2) - 1));
+        
+        if ismember(id, ind) == 1
+            fprintf(fd, [tline '\n']);
+            tline = fgetl(fid);
+            
+            while tline(1) ~= '#'
+                fprintf(fd, [tline '\n']);
+                tline = fgetl(fid);
+            end
+            
+        else
+            tline = fgetl(fid);
+        end
+        
+    else
+        tline = fgetl(fid);
+    end
+end
+
+fclose(fid);
+fclose(fd);     
 
 
 
