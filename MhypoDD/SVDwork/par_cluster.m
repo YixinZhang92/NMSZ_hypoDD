@@ -1,6 +1,6 @@
 %%%%%%%% Partition hypocenters into clusters %%%%%%%%%%%
 clear all;
-delete('cluster*.txt');
+delete('../clusFile/cluster*.txt');
 delete('file_names.txt');
 loc_file = load('xyz.loc');
 ind_file = load('xyz.ind_loc');
@@ -24,7 +24,7 @@ for i = 1:nx
         cluster_area{nc} = [bndr_left+(i-1)*10, bndr_left+i*10, ...
             bndr_down+(j-1)*10, bndr_down+j*10];
         
-        file_name = ['cluster' num2str(nc) '.txt'];
+        file_name = ['../clusFile/cluster' num2str(nc) '.txt'];
         %         fprintf(fname,'%s \n', file_name);
         fd = fopen(file_name, 'w');
         ne(nc) = 0; % number of events in 'nc'th cluster
@@ -140,7 +140,7 @@ for i = 1:nx
                 
                 if gne_r(p) ~= 0
                     
-                    file_name = ['cluster' num2str(nc) '_' num2str(p) '.txt'];
+                    file_name = ['../clusFile/cluster' num2str(nc) '_' num2str(p) '.txt'];
                     fprintf(fname,'%s \n', file_name);
                     fdg = fopen(file_name, 'w');
                     
