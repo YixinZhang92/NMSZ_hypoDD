@@ -1,9 +1,9 @@
 %%%%%%%% Partition hypocenters into clusters %%%%%%%%%%%
 clear all;
-delete('../clusFile/cluster*.txt');
-delete('file_names.txt');
-loc_file = load('xyz.loc');
-ind_file = load('xyz.ind_loc');
+delete('../File/cluster*.txt');
+delete('../genLoc/file_names.txt');
+loc_file = load('../genLoc/xyz.loc');
+ind_file = load('../genLoc/xyz.ind_loc');
 
 bndr_left = floor(min(loc_file(:,2))/10)*10;
 bndr_right = ceil(max(loc_file(:,2))/10)*10;
@@ -14,7 +14,9 @@ nx = (bndr_right - bndr_left)/10;
 ny = (bndr_up - bndr_down)/10;
 nc = 0; % number of big clusters
 
-fname = fopen('file_names.txt','w');
+nmax = 50;
+
+fname = fopen('../genLoc/file_names.txt','w');
 tnewif = 0; % total number of events written into file
 
 for i = 1:nx
@@ -24,7 +26,7 @@ for i = 1:nx
         cluster_area{nc} = [bndr_left+(i-1)*10, bndr_left+i*10, ...
             bndr_down+(j-1)*10, bndr_down+j*10];
         
-        file_name = ['../clusFile/cluster' num2str(nc) '.txt'];
+        file_name = ['../File/cluster' num2str(nc) '.txt'];
         %         fprintf(fname,'%s \n', file_name);
         fd = fopen(file_name, 'w');
         ne(nc) = 0; % number of events in 'nc'th cluster
@@ -51,7 +53,7 @@ for i = 1:nx
             delete(file_name);
             nc = nc-1;
             
-        elseif ne(nc) > 99
+        elseif ne(nc) > nmax
             
             clear indg;
             clear group_loc;
@@ -64,10 +66,10 @@ for i = 1:nx
             group_loc{1} = cluster_loc{nc}; % initial group in 'nc'th cluster
             group_area{1} = cluster_area{nc}; % set up a cell for the cluster has more than 100 hypocenters
             
-            while ne(nc) >99
+            while ne(nc) > nmax
                 
-                % get the index of groups contains more than 99 hypocenters
-                indg = find(cellfun('size',group_loc,1)>99);
+                % get the index of groups contains more than nmax hypocenters
+                indg = find(cellfun('size',group_loc,1)>nmax);
                 
                 for l = 1:length(indg)
                     
@@ -101,7 +103,7 @@ for i = 1:nx
                         end
                     end
                     
-                    for m = 1:4 % seperate cluster (ne>99) into 4 groups
+                    for m = 1:4 % seperate cluster (ne>nmax) into 4 groups
                         
                         ng{nc} = ng{nc}+1;
                         neg = 0; % number of events in each group
@@ -140,7 +142,7 @@ for i = 1:nx
                 
                 if gne_r(p) ~= 0
                     
-                    file_name = ['../clusFile/cluster' num2str(nc) '_' num2str(p) '.txt'];
+                    file_name = ['../File/cluster' num2str(nc) '_' num2str(p) '.txt'];
                     fprintf(fname,'%s \n', file_name);
                     fdg = fopen(file_name, 'w');
                     

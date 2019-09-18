@@ -12,11 +12,11 @@ tline = fgetl(fd);
 nfile = 0; % number of cluster files
 while ischar(tline)
     nfile = nfile+1;
-    cluster_file{nfile} = ['../clusFile/' tline ];
+    cluster_file{nfile} = ['../File/' tline ];
     [filepath,name,ext] = fileparts(tline);
-    phase_file{nfile} = ['../clusFile/' name '.phase']; % Output files: phase files
-    cc_file{nfile} = ['../clusFile/' name '.ccr']; % Output files: cc files
-    loc_file{nfile} = ['../clusFile/' name '.ori_loc']; % Output files: location file
+    phase_file{nfile} = ['../File/' name '.phase']; % Output files: phase files
+    cc_file{nfile} = ['../File/' name '.ccr']; % Output files: cc files
+    loc_file{nfile} = ['../File/' name '.ori_loc']; % Output files: location file
     tline = fgetl(fd);
 end
 fclose(fd);
